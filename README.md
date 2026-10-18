@@ -16,6 +16,7 @@ https://github.com/user-attachments/assets/d5a110ff-30c1-4506-91f7-b71ddeddc31f
 - Voice indicator that lights up while you talk.
 - Gauge speedometer with scale, red zone and glowing pointer. MPH or KPH.
 - Fuel bar and seatbelt status.
+- Always-visible key reference panel on the left side (editable list in `config.lua`, players can hide it with `/hudkeys`).
 - Context hints:
   - Driving 5 seconds without a seatbelt: "Press B to fasten your seatbelt".
   - Pressing the exit key while buckled: "Unfasten your seatbelt first".
@@ -55,6 +56,7 @@ See [config.lua](config.lua): units, gauge scale, polling rate, hint delays and 
 
 | Command | Description |
 | --- | --- |
+| `/hudkeys` | Show or hide the key reference panel (remembered) |
 | `/hudreset` | Show the voice hint again (useful for testing) |
 
 ## How it works
