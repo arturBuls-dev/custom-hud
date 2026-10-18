@@ -4,6 +4,12 @@ A clean HUD for FiveM (Qbox), built from scratch with React + TypeScript. Black 
 
 ![Preview](docs/preview.png)
 
+
+
+https://github.com/user-attachments/assets/d5a110ff-30c1-4506-91f7-b71ddeddc31f
+
+
+
 ## Features
 
 - Status rings: health, armor (only when you have some), hunger, thirst. A ring turns red and pulses when it is low.
