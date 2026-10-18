@@ -1,0 +1,256 @@
+:root {
+  --bg: rgba(11, 11, 12, 0.78);
+  --track: rgba(255, 255, 255, 0.1);
+  --text: #f4f4f5;
+  --muted: #8a8a92;
+  --accent: #fcaf17;
+  --danger: #ff4d4d;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Transparent page background: the HUD is drawn over the game */
+html, body, #root {
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--text);
+  user-select: none;
+}
+
+/* Browser only: dark background instead of the game */
+html.dev, html.dev body { background: linear-gradient(135deg, #3a4150, #1c2028); }
+
+/* ---------- Status rings (bottom center) ---------- */
+.status {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 2px solid var(--accent);
+  border-radius: 14px;
+  animation: status-in 0.4s ease both;
+}
+
+.ring {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  color: var(--accent);
+}
+.ring svg { display: block; width: 44px; height: 44px; }
+.ring .track { fill: none; stroke: var(--track); stroke-width: 3; }
+.ring .bar {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.4s ease, stroke 0.3s ease;
+}
+.ring-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ring-icon svg { width: 18px; height: 18px; }
+.ring.low { color: var(--danger); }
+.ring.low .ring-icon { animation: pulse 1.2s ease-in-out infinite; }
+
+/* Microphone: dim when silent, yellow and glowing while talking */
+.voice {
+  width: 30px;
+  height: 30px;
+  margin-left: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  transition: color 0.15s ease, filter 0.15s ease;
+}
+.voice svg { width: 20px; height: 20px; }
+.voice.talking { color: var(--accent); filter: drop-shadow(0 0 6px rgba(252, 175, 23, 0.8)); }
+
+/* ---------- Hints (above the rings) ---------- */
+.hints {
+  position: fixed;
+  left: 50%;
+  bottom: 88px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-size: 14px;
+  white-space: nowrap;
+  background: var(--bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  animation: hint-in 0.35s ease both;
+}
+.hint svg { width: 16px; height: 16px; color: var(--accent); }
+.hint.warn { border-color: rgba(255, 77, 77, 0.55); }
+.hint.warn kbd { border-color: var(--danger); color: var(--danger); }
+
+kbd {
+  display: inline-block;
+  min-width: 24px;
+  padding: 2px 7px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--accent);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--accent);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+}
+
+/* ---------- Vehicle panel: gauge speedometer (bottom right) ---------- */
+.vehicle {
+  position: fixed;
+  right: 28px;
+  bottom: 20px;
+  width: 250px;
+  animation: hud-in 0.4s ease both;
+}
+
+.gauge { position: relative; width: 250px; height: 250px; }
+.gauge svg { display: block; width: 250px; height: 250px; }
+
+.gauge-bg { fill: rgba(8, 8, 9, 0.82); stroke: rgba(255, 255, 255, 0.1); stroke-width: 1; }
+
+.g-track, .g-red, .g-fill { fill: none; stroke-linecap: butt; }
+.g-track { stroke: rgba(255, 255, 255, 0.14); stroke-width: 3; }
+.g-red { stroke: #c4161c; stroke-width: 6; }
+.g-fill {
+  stroke: var(--accent);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 4px rgba(252, 175, 23, 0.7));
+  transition: stroke-dasharray 0.12s linear;
+}
+
+.tick { stroke: rgba(255, 255, 255, 0.55); stroke-width: 1.2; }
+.tick.major { stroke: var(--text); stroke-width: 2; }
+.tick-label {
+  fill: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.needle circle {
+  fill: var(--accent);
+  stroke: #0b0b0c;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 5px rgba(252, 175, 23, 0.95));
+}
+.needle { transition: transform 0.12s linear; }
+
+/* Numbers and unit in the center of the gauge */
+.gauge-readout {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 4px;
+}
+.speed-value {
+  font-size: 58px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.speed-unit {
+  margin-top: 4px;
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.vehicle-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -18px 18px 0;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 2px solid var(--accent);
+  border-radius: 12px;
+}
+
+.fuel { display: flex; align-items: center; flex: 1; margin-right: 12px; }
+.fuel-label { width: 36px; font-size: 10px; letter-spacing: 0.16em; color: var(--muted); }
+.fuel-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--track);
+  overflow: hidden;
+}
+.fuel-bar {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+  transition: width 0.4s ease, background 0.3s ease;
+}
+.fuel-bar.low { background: var(--danger); }
+
+.belt {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  color: var(--danger);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.belt.on { color: var(--muted); animation: none; }
+
+/* ---------- Animations ---------- */
+@keyframes status-in {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes hud-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes hint-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
