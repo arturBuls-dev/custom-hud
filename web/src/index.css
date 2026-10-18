@@ -254,3 +254,42 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- Key reference (left side) ---------- */
+.keyhelp {
+  position: fixed;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px 14px;
+  background: rgba(11, 11, 12, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 2px solid var(--accent);
+  border-radius: 12px;
+  animation: keyhelp-in 0.4s ease both;
+}
+
+.keyhelp-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.keyhelp-row kbd { min-width: 54px; font-size: 12px; }
+.keyhelp-row span { color: var(--text); }
+
+.keyhelp-foot {
+  margin-top: 4px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+@keyframes keyhelp-in {
+  from { opacity: 0; transform: translate(-8px, -50%); }
+  to   { opacity: 1; transform: translate(0, -50%); }
+}

@@ -23,4 +23,22 @@ Config = {
     lockKey = 'L',           -- vehicle lock in qbx_vehiclekeys
     talkKey = 'N',           -- FiveM default voice chat key (can be changed in FiveM settings)
     voiceRangeKey = '`',     -- voice_defaultCycle = "GRAVE" in voice.cfg
+
+    -- Always-visible key reference on the left side of the screen.
+    -- Text only: edit it to match the keys of your server. Players can hide it with /hudkeys.
+    keyHelp = {
+        enabled = true,
+        items = {
+            { key = 'Tab',  label = 'Inventory' },
+            { key = '1-5',  label = 'Quick slots' },
+            { key = 'M',    label = 'Phone (needs item)' },
+            { key = 'Alt',  label = 'Interact (hold)' },
+            { key = 'F5',   label = 'Emotes' },
+            { key = 'Z',    label = 'Radial menu' },
+            { key = 'N',    label = 'Talk' },
+            { key = 'Home', label = 'Players' },
+            { key = 'L',    label = 'Lock vehicle' },
+            { key = 'B',    label = 'Seatbelt', vehicleOnly = true },
+        },
+    },
 }

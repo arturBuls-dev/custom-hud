@@ -23,19 +23,35 @@ type HudData = {
   seatbeltKey: string;
   talkKey: string;
   voiceRangeKey: string;
+  keyHelp: KeyHelpItem[] | false;
 };
+
+type KeyHelpItem = { key: string; label: string; vehicleOnly?: boolean };
 
 const EMPTY: HudData = {
   action: 'hud', show: false, health: 100, armor: 0, hunger: 100, thirst: 100,
   talking: false, inVehicle: false, speed: 0, fuel: 0, seatbelt: false, unit: 'MPH',
   gaugeMax: 240, hintSeatbelt: false, hintMic: false, hintExit: false, hintLocked: false, lockKey: 'L',
-  seatbeltKey: 'B', talkKey: 'N', voiceRangeKey: '`',
+  seatbeltKey: 'B', talkKey: 'N', voiceRangeKey: '`', keyHelp: false,
 };
+
+// Sample key reference for browser preview (in game it comes from config.lua)
+const DEV_KEYS: KeyHelpItem[] = [
+  { key: 'F2', label: 'Inventory' },
+  { key: 'M', label: 'Phone' },
+  { key: 'Alt', label: 'Interact (hold)' },
+  { key: 'F5', label: 'Emotes' },
+  { key: 'Z', label: 'Radial menu' },
+  { key: 'N', label: 'Talk' },
+  { key: 'Home', label: 'Players' },
+  { key: 'L', label: 'Lock vehicle' },
+  { key: 'B', label: 'Seatbelt', vehicleOnly: true },
+];
 
 // Sample data for browser preview (in game client.lua sends the real data)
 const DEV_DATA: HudData = {
   ...EMPTY, show: true, health: 78, armor: 40, hunger: 55, thirst: 18,
-  inVehicle: true, speed: 64, fuel: 62, hintSeatbelt: true, hintMic: true,
+  inVehicle: true, speed: 64, fuel: 62, hintSeatbelt: true, hintMic: true, keyHelp: DEV_KEYS,
 };
 
 const clamp = (v: number, max = 100) => Math.max(0, Math.min(max, v));
@@ -178,6 +194,20 @@ export default function App() {
 
   return (
     <>
+      {hud.keyHelp && (
+        <div className="keyhelp">
+          {hud.keyHelp
+            .filter((item) => !item.vehicleOnly || hud.inVehicle)
+            .map((item) => (
+              <div className="keyhelp-row" key={item.key + item.label}>
+                <Key>{item.key}</Key>
+                <span>{item.label}</span>
+              </div>
+            ))}
+          <div className="keyhelp-foot">/hudkeys to hide</div>
+        </div>
+      )}
+
       <div className="hints">
         {hud.hintLocked && (
           <div className="hint warn">

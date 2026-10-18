@@ -7,6 +7,10 @@ local last = {}
 local MIC_KVP = 'mic_hint_done'
 local micHintDone = GetResourceKvpString(MIC_KVP) == '1'
 
+-- The key reference panel can be hidden by the player with /hudkeys (remembered between sessions)
+local KEYHELP_KVP = 'keyhelp_hidden'
+local keyHelpHidden = GetResourceKvpString(KEYHELP_KVP) == '1'
+
 -- When the player sat behind the wheel without a seatbelt (ms), used to delay the hint
 local unbuckledSince = nil
 
@@ -91,6 +95,16 @@ CreateThread(function()
     end
 end)
 
+-- Show or hide the key reference panel
+RegisterCommand('hudkeys', function()
+    keyHelpHidden = not keyHelpHidden
+    if keyHelpHidden then
+        SetResourceKvp(KEYHELP_KVP, '1')
+    else
+        DeleteResourceKvp(KEYHELP_KVP)
+    end
+end, false)
+
 -- Test command: show the voice hint again
 RegisterCommand('hudreset', function()
     micHintDone = false
@@ -156,6 +170,8 @@ CreateThread(function()
                 seatbeltKey = Config.seatbeltKey,
                 talkKey = Config.talkKey,
                 voiceRangeKey = Config.voiceRangeKey,
+                -- the same table every tick, so it is only re-sent when visibility changes
+                keyHelp = (Config.keyHelp.enabled and not keyHelpHidden) and Config.keyHelp.items or false,
             }
 
             if inVehicle then
